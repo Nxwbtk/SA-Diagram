@@ -1,0 +1,74 @@
+@startuml
+|Customer/Guide/Fortune Teller|
+start
+:register;
+:send info to server;
+|Server|
+:save info;
+if (Type of User) is (Customer) then
+	:Send confirm mail to Customer;
+else (Guide/Fortune Teller)
+	|Server|
+	:Send approve to admin;
+	|Admin|
+	:Check info;
+	if (Correct info) is (Correct) then
+		:Send confirm mail to Guide/Fortune Teller;
+	else (Incorrect)
+		:Send reject mail to Guide/Fortune Teller;
+	endif
+endif
+|User/Guide/Fortune Teller|
+:Confirm Register;
+:Login;
+stop
+
+@enduml
+
+@startuml
+|User|
+start
+:Login;
+:Send mail and password info to server;
+|Server|
+:Check info;
+if (isCorrect) is (Correct) then
+	:Generate limited time token;
+	:Save token to Database;
+	:Send Page and token to User;
+else (inCorrect)
+	:Send Error page to User;
+endif
+
+|User|
+:Get respone from server;
+if (Access) is (true) then
+	:Save token to cookie;
+	:Redirect to Home page;
+	if (User) is (Customer) then
+	:Show Customer page;
+	:Selected Service;
+	:Redirect to Service page;
+	else (Guide/Fortune Teller)
+	:Show Guide/Fortune Teller page;
+	endif
+else (false)
+	:Show Error Dialog;
+	:Redirect to Login page;
+endif
+stop
+@enduml
+
+@startuml
+|Customer|
+start
+:Login;
+:Select Service;
+:Send request to server;
+|Server|
+:Check token;
+:Check request Service;
+:Return Service page;
+|Customer|
+:Show Service page;
+@enduml
