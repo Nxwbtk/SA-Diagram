@@ -1,3 +1,4 @@
+' Register System
 @startuml
 |Customer/Guide/Fortune Teller|
 start
@@ -24,6 +25,8 @@ endif
 stop
 
 @enduml
+
+' Login System
 
 @startuml
 |User|
@@ -59,6 +62,8 @@ endif
 stop
 @enduml
 
+' Customer Service System
+
 @startuml
 |Customer|
 start
@@ -91,6 +96,8 @@ else (true)
 endif
 stop
 @enduml
+
+' Payment System
 
 @startuml
 |Customer|
@@ -125,6 +132,8 @@ else (Credit Card)
 endif
 stop
 @enduml
+
+' Guide/Fortune Teller add Service System
 
 @startuml
 |Guide/Fortune Teller|
