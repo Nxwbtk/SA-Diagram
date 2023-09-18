@@ -1,0 +1,4 @@
+' Register a new user
+@startuml
+actor User
+@enduml

@@ -62,7 +62,7 @@ endif
 stop
 @enduml
 
-' Customer Service System
+' Customer select Service System
 
 @startuml
 |Customer|
