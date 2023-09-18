@@ -1,4 +1,171 @@
 ' Register a new user
 @startuml
+==Register a new user==
 actor User
+actor Admin
+participant "Frontend" as FE
+participant "Backend" as BE
+FE -> BE: Register new user
+note over FE: POST /api/register
+activate BE
+BE -> BE: Validate input
+group Create  new user
+	note over BE: If user is Guide/Fortune Teller
+	BE -->> Admin: Request Approve account
+	activate Admin
+	Admin -> BE: Approve account
+	note over BE : If user is Customer
+	BE -->> User: Mail to confirm account
+	activate User
+	User -> BE: Confirm account
+end
+BE -> User: Return access
+@enduml
+
+' Login
+
+@startuml
+==Login==
+actor User
+participant "Frontend" as FE
+participant "Backend" as BE
+note over FE: POST /api/login
+User -> FE: Login
+activate FE
+FE -> BE: Login
+activate BE
+BE -> BE: Validate input
+BE -->> FE: Return access
+FE -> FE: Redirect to home
+FE -->> User: Return home page
+@enduml
+
+
+' Customer book service
+
+@startuml
+==Customer select service==
+actor Customer
+actor "Guide/Fortune Teller" as GF
+participant "Frontend" as FE
+participant "Backend" as BE
+Customer -> FE: Select Type of service
+activate FE
+note over FE: GET /api/menu
+FE -> BE: Request Get type of services
+activate BE
+BE -> BE: Get type of services
+BE -->> FE: Return type of services
+FE -->> Customer: Display type of services
+Customer -> FE: Select service type
+FE -> BE: Request Get service List
+BE -> BE: Get service List
+BE -->> FE: Return service List
+FE -->> Customer: Display service List
+Customer -> FE: book service
+FE -> BE: Request Get service info
+BE -> BE: Get service info
+BE -->> FE: Return service info
+Customer -> FE: book schedule
+FE -> BE: send schedule to BE
+BE -> GF: Send book confirmation mail
+GF -> BE: Confirm book schedule
+BE -> BE: Save book schedule
+BE -->> Customer: Return book confirmation mail
+@enduml
+
+' Guide and Fortune teller add service and schedule
+
+@startuml
+==Guide and Fortune teller add service and schedule==
+actor "Guide/Fortune Teller" as GF
+actor Admin
+participant "Frontend" as FE
+participant "Backend" as BE
+GF -> FE: Add service
+activate FE
+FE -> BE: Request Add service
+activate BE
+BE -> BE: Save service
+BE -->> Admin: Request Approve service
+activate Admin
+Admin -> BE: Approve service
+deactivate Admin
+BE -->> FE: Return confirmation
+BE -->> GF: Return confirmation mail
+@enduml
+
+' Payment process
+
+@startuml
+==Payment process==
+actor Customer
+participant "Frontend" as FE
+participant "Backend" as BE
+participant "Bank" as Bank
+Customer -> FE: Select payment method
+activate FE
+FE -> BE: Request payment
+activate BE
+BE -> Bank: Request payment
+activate Bank
+Bank -> Bank: Validate payment
+Bank -->> BE: Return payment transaction
+BE -->> FE: Return payment transaction
+FE -->> Customer: Return payment transaction
+Customer -> Customer: Fill payment info
+Customer -> FE: Confirm payment
+FE -> BE: Request confirm payment
+BE -> Bank: Request confirm payment
+Bank -> Bank: Validate payment
+Bank -->> BE: Return payment transaction
+BE -->> FE: Update status of payment
+deactivate FE
+@enduml
+
+' Guide and Fortune teller send report
+
+@startuml
+==Guide and Fortune teller send report==
+actor "Guide/Fortune Teller" as GF
+actor Admin
+participant "Frontend" as FE
+participant "Backend" as BE
+GF -> FE: Fill report info
+activate FE
+FE -> BE: Request POST report
+activate BE
+BE -> BE: Save report
+BE -->> Admin: Request Approve report
+activate Admin
+Admin -> BE: Approve report
+deactivate Admin
+BE -> BE: Update status of report
+BE -->> FE: Return confirmation
+BE -->> GF: Return confirmation mail
+deactivate FE
+deactivate BE
+@enduml
+
+' Customer give feedback
+
+@startuml
+==Customer give feedback==
+actor Customer
+actor Admin
+actor "Guide/Fortune Teller" as GF
+participant "Frontend" as FE
+participant "Backend" as BE
+Customer -> FE: Fill feedback info
+activate FE
+FE -> BE: Request POST feedback
+activate BE
+BE -> BE: Save feedback
+BE -->> Admin: Request Approve feedback
+activate Admin
+Admin -> BE: Approve feedback
+deactivate Admin
+BE -> BE: Update status of feedback
+BE -->> FE: Return confirmation
+BE -->> GF: Send feedback mail
 @enduml
