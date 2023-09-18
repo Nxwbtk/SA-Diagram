@@ -177,3 +177,61 @@ endif
 |Guide/Fortune Teller|
 stop
 @enduml
+
+' Send prove of services System
+
+@startuml
+|Guide/Fortune Teller|
+start
+:Press finish job;
+:Send the prove of the job;
+repeat
+:Send prove to server;
+|Server|
+:Save prove to DB;
+:Send prove to admin;
+|Admin|
+:Check prove;
+:send result to server;
+|Server|
+:Check result;
+if (Result) is (Incorrect) then
+	:Send reject mail to Guide/Fortune Teller;
+	|Guide/Fortune Teller|
+	:Resend prove;
+else (Correct)
+	|Server|
+	:Update status to DB;
+endif
+|Guide/Fortune Teller|
+repeat while (reject prove) is (Yes) not (No)
+stop
+@enduml
+
+' Feedback System
+
+@startuml
+|Customer|
+start
+:Login;
+:Select finish service;
+repeat
+:Send feedback to server;
+|Server|
+:Save feedback to DB;
+:Send feedback to approve with admin;
+|Admin|
+:Check feedback;
+:Send result to server;
+|Server|
+:Check result;
+if (Result) is (Incorrect) then
+	:Send reject mail to Customer;
+else (Correct)
+	|Server|
+	:Update status to DB;
+endif
+|Customer|
+repeat while (reject feedback) is (Yes) not (No)
+stop
+@enduml
