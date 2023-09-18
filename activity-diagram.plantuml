@@ -71,4 +71,100 @@ start
 :Return Service page;
 |Customer|
 :Show Service page;
+:Select Guide/Fortune Teller;
+:Check the avaliable date;
+|Server|
+:Send the avaliable date to Customer;
+|Customer|
+:Select date;
+:Send request to server;
+|Server|
+:Check token;
+:Check request date;
+if (isAvaliable) is (false) then
+	:Send Error page to Customer;
+	|Customer|
+	:Show Error page;
+else (true)
+	|Server|
+	:Redirect to Payment page;
+endif
+stop
+@enduml
+
+@startuml
+|Customer|
+start
+:Select Payment method;
+|Server|
+if (Paymeny method) is (QRCode) then
+	|Server|
+	:Generate QRCode;
+	:Send QRCode to Customer;
+	|Customer|
+	:Show QRCode;
+	:Scan QRCode;
+	:Send slip to server;
+else (Credit Card)
+	|Server|
+	:Redirect to Credit Card page;
+	:Send request to Bank;
+	|Bank|
+	:Check request;
+	:Generate transaction;
+	|Customer|
+	:Fill Credit Card info;
+	:Send Credit Card info to Bank;
+	|Bank|
+	:Check Credit Card info;
+	:Send transaction result to Server;
+	|Server|
+	:Check transaction result;
+	:Save transaction result;
+	:Update payment status on DB;
+endif
+stop
+@enduml
+
+@startuml
+|Guide/Fortune Teller|
+start
+:Login;
+:Select menu;
+:Send request to server;
+|Server|
+:Check request;
+if (Request Page) is (Add Service) then
+	:Return Add service page to Guide/Fortune Teller;
+else (Add working time)
+	:Return Add working time page to Guide/Fortune Teller;
+endif
+|Guide/Fortune Teller|
+:Show page;
+:Fill info;
+if (Page) is (Add working time) then
+	:Send request to server;
+	|Server|
+	:Check token;
+	:Return Add working time page;
+	|Guide/Fortune Teller|
+	:Show page;
+	:Add time;
+	:Save time to server;
+else (Add Service)
+	:Send request to server;
+	|Server|
+	:Check token;
+	:Send approve to admin;
+	|Admin|
+	:Check info;
+	if (Correct info) is (Correct) then
+		:Save info to DB;
+	else (Incorrect)
+	endif
+|Server|
+:Send confirm mail to Guide/Fortune Teller;
+endif
+|Guide/Fortune Teller|
+stop
 @enduml
