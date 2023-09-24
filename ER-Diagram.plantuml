@@ -12,11 +12,19 @@ entity "User" as user {
 	role: string
 }
 
-entity "Service_provider" as sp {
+entity "Provider" as provider {
 	+ id: uuid_base64 [PK]
 	--
 	User_id: uuid_base64 [FK]
 	Services: uuid_base64 [FK]
+}
+
+entity "Customer" as customer {
+	+ id: uuid_base64 [PK]
+	--
+	User_id: uuid_base64 [FK]
+	Booking_id: uuid_base64 [FK]
+	Used_Services: uuid_base64 [FK]
 }
 
 entity "Services" as service {
@@ -30,13 +38,14 @@ entity "Services" as service {
 	price: int
 	status: string
 	approver: uuid_base64 [FK]
+	provider_id: uuid_base64 [FK]
 }
 
-entity "Book" as book {
+entity "Booking" as book {
 	+ id: uuid_base64 [PK]
 	--
 	Service_id: uuid_base64 [FK]
-	User_id: uuid_base64 [FK]
+	Customer_id: uuid_base64 [FK]
 	payment_id: uuid_base64 [FK]
 	created_at: Date
 	update_at: Date
@@ -73,6 +82,31 @@ entity "Feedback" as fb {
 	status: string
 }
 
-' entity
+entity "Service_log" as log {
+	+ id: uuid_base64 [PK]
+	--
+	Service_id: uuid_base64 [FK]
+	Booking_id: uuid_base64 [FK]
+	created_at: Date
+	update_at: Date
+	approver: uuid_base64 [FK]
+}
+
+user ||--o{ provider
+user ||--o{ customer
+user ||--o{ admin
+customer ||--o{ book
+service ||--o{ book
+provider ||--o{ service
+customer ||--o{ payment
+book ||--|| payment
+admin ||--o{ service
+admin ||--o{ fb
+provider ||--o{ fb
+service ||--o{ log
+admin ||--o{ log
+book ||--|| log
+customer ||--o{ fb
+fb ||--|| book
 
 @enduml
