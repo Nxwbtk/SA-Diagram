@@ -96,63 +96,94 @@ activate GF
 GF -> BE: Confirm book schedule
 deactivate GF
 BE -> BE: Update status of selected schedule
-BE -->> Customer: Return book confirmation mail
+group Unavailable schedule
+	note over BE: If schedule is unavailable
+	BE -->> Customer: Return Select schedule page
+end
+group Available schedule
+	note over BE: If schedule is available
+	BE -->> Customer: Return confirm mail
+end
 deactivate BE
 @enduml
 
 ' Guide and Fortune teller add service and schedule
 
 @startuml
-==Guide and Fortune teller add service and schedule==
 actor "Guide/Fortune Teller" as GF
 actor Admin
 participant "Frontend" as FE
 participant "Backend" as BE
-GF -> FE: Add service
+GF -> FE: Fill service info
 activate FE
-FE -> BE: Request Add service
+FE -> FE: Check payload service info
+FE -> BE: Request POST service
 activate BE
 BE -> BE: Save service
 BE -->> Admin: Request Approve service
 activate Admin
 Admin -> BE: Approve service
+BE -> BE: Update status of service
 deactivate Admin
-BE -->> FE: Return confirmation
-BE -->> GF: Return confirmation mail
+BE -->> GF: GET add service status
 @enduml
 
 ' Payment process
 
 @startuml
-==Payment process==
 actor Customer
 participant "Frontend" as FE
 participant "Backend" as BE
 participant "Bank" as Bank
+FE -> BE: Get payment method page
+activate FE
+activate BE
+BE -> BE: Get payment method
+BE -->> FE: Return payment method
+deactivate BE
+deactivate FE
 Customer -> FE: Select payment method
 activate FE
-FE -> BE: Request payment
-activate BE
-BE -> Bank: Request payment
-activate Bank
-Bank -> Bank: Validate payment
-Bank -->> BE: Return payment transaction
-BE -->> FE: Return payment transaction
-FE -->> Customer: Return payment transaction
-Customer -> Customer: Fill payment info
-Customer -> FE: Confirm payment
-FE -> BE: Request confirm payment
-BE -> Bank: Request confirm payment
-Bank -> Bank: Validate payment
-Bank -->> BE: Return payment transaction
-BE -->> FE: Update status of payment
-deactivate FE
+group Select Credit Card
+	FE -> BE: GET credit card form
+	FE -> FE: Return credit card page
+	Customer -> FE: Fill credit card info
+	FE -> FE: Check payload credit card info
+	FE -> BE: POST ordered service
+	activate BE
+	BE -> BE: Save ordered service
+	BE -> Bank: Request payment
+	activate Bank
+	Bank -> Bank: Validate payment
+	Bank -->> BE: Return payment transaction
+	deactivate Bank
+	BE -> BE: Save transaction
+	BE -> BE: Update status of payment
+	BE -->> FE: Return payment transaction
+	deactivate BE
+end
+group Select QR code method
+	Customer -> FE: Select QR code method
+	FE -> BE: POST request QR code
+	activate BE
+	BE -> BE: Save ordered service
+	BE -> BE: Generate QR code
+	BE -> BE: Update status of payment
+	BE -->> FE: Return QR code
+	deactivate BE
+	Customer -> FE: Scan QR code
+	FE -> BE: POST ordered service
+	activate BE
+	BE -> BE: Validate Payment
+	BE -> BE: Update status of payment
+	BE -->> FE: Return payment transaction
+	deactivate BE
+end
 @enduml
 
 ' Guide and Fortune teller send report
 
 @startuml
-==Guide and Fortune teller send report==
 actor "Guide/Fortune Teller" as GF
 actor Admin
 participant "Frontend" as FE
@@ -160,6 +191,7 @@ participant "Backend" as BE
 GF -> FE: Fill report info
 activate FE
 FE -> BE: Request POST report
+deactivate FE
 activate BE
 BE -> BE: Save report
 BE -->> Admin: Request Approve report
@@ -176,7 +208,6 @@ deactivate BE
 ' Customer give feedback
 
 @startuml
-==Customer give feedback==
 actor Customer
 actor Admin
 actor "Guide/Fortune Teller" as GF
@@ -185,6 +216,7 @@ participant "Backend" as BE
 Customer -> FE: Fill feedback info
 activate FE
 FE -> BE: Request POST feedback
+deactivate FE
 activate BE
 BE -> BE: Save feedback
 BE -->> Admin: Request Approve feedback
