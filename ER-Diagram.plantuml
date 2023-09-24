@@ -16,15 +16,16 @@ entity "Provider" as provider {
 	+ id: uuid_base64 [PK]
 	--
 	User_id: uuid_base64 [FK]
-	Services: uuid_base64 [FK]
+	Services: [uuid_base64] [FK]
 }
 
 entity "Customer" as customer {
 	+ id: uuid_base64 [PK]
 	--
 	User_id: uuid_base64 [FK]
-	Booking_id: uuid_base64 [FK]
-	Used_Services: uuid_base64 [FK]
+	Booking_id: [uuid_base64] [FK]
+	Used_Services: [uuid_base64] [FK]
+	Feedback_id: [uuid_base64] [FK]
 }
 
 entity "Services" as service {
