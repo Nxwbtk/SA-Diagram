@@ -1,41 +1,51 @@
 ' Register a new user
 @startuml
-==Register a new user==
 actor User
 actor Admin
 participant "Frontend" as FE
 participant "Backend" as BE
-FE -> BE: Register new user
+User -> FE: Fill info
+activate FE
+FE -> BE: Post info
+deactivate FE
 note over FE: POST /api/register
 activate BE
 BE -> BE: Validate input
-group Create  new user
+BE -> BE: Save info
+deactivate BE
+group Request Approve account
 	note over BE: If user is Guide/Fortune Teller
 	BE -->> Admin: Request Approve account
+	activate BE
 	activate Admin
 	Admin -> BE: Approve account
+	deactivate BE
+	deactivate Admin
+end
+group Send confirmation mail
 	note over BE : If user is Customer
 	BE -->> User: Mail to confirm account
 	activate User
 	User -> BE: Confirm account
 end
-BE -> User: Return access
+BE -> User: Return user type
 @enduml
 
 ' Login
 
 @startuml
-==Login==
 actor User
 participant "Frontend" as FE
 participant "Backend" as BE
 note over FE: POST /api/login
-User -> FE: Login
+User -> FE: Fill login info
 activate FE
-FE -> BE: Login
+FE -> BE: Post login
 activate BE
+BE -> BE: Save token
 BE -> BE: Validate input
-BE -->> FE: Return access
+BE -->> FE: Return token
+deactivate BE
 FE -> FE: Redirect to home
 FE -->> User: Return home page
 @enduml
@@ -44,34 +54,50 @@ FE -->> User: Return home page
 ' Customer book service
 
 @startuml
-==Customer select service==
 actor Customer
 actor "Guide/Fortune Teller" as GF
 participant "Frontend" as FE
 participant "Backend" as BE
-Customer -> FE: Select Type of service
+Customer -> FE: Access to menu page
 activate FE
 note over FE: GET /api/menu
 FE -> BE: Request Get type of services
 activate BE
 BE -> BE: Get type of services
 BE -->> FE: Return type of services
+deactivate BE
 FE -->> Customer: Display type of services
+deactivate FE
 Customer -> FE: Select service type
+activate FE
 FE -> BE: Request Get service List
+activate BE
 BE -> BE: Get service List
 BE -->> FE: Return service List
-FE -->> Customer: Display service List
+deactivate BE
+FE -->> Customer: Display Avaliable service List
+deactivate FE
 Customer -> FE: book service
-FE -> BE: Request Get service info
-BE -> BE: Get service info
-BE -->> FE: Return service info
+activate FE
+FE -> BE: Request POST selected service
+activate BE
+BE -> BE: Save selected service
+BE -->> FE: Return select schedule page
+deactivate BE
+deactivate FE
 Customer -> FE: book schedule
-FE -> BE: send schedule to BE
+activate FE
+FE -> BE: POST selected schedule
+deactivate FE
+activate BE
+BE -> BE: Save selected schedule
 BE -> GF: Send book confirmation mail
+activate GF
 GF -> BE: Confirm book schedule
-BE -> BE: Save book schedule
+deactivate GF
+BE -> BE: Update status of selected schedule
 BE -->> Customer: Return book confirmation mail
+deactivate BE
 @enduml
 
 ' Guide and Fortune teller add service and schedule

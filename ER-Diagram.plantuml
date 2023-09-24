@@ -1,0 +1,73 @@
+@startuml
+entity "User" as user {
+	+ id: uuid_base64 [PK]
+	--
+	first_name: string
+	middle_name: string
+	last_name: string
+	email: stirng
+	password: string
+	created_at: Date
+	updated_at: Date
+	role: string
+}
+
+entity "Service_provider" as sp {
+	+ id: uuid_base64 [PK]
+	--
+	User_id: uuid_base64 [FK]
+	Services: uuid_base64 [FK]
+}
+
+entity "Services" as service {
+	+ id: uuid_base64 [PK]
+	--
+	name: string
+	description: string
+	created_at: Date
+	update_at: Date
+	duration: int
+	price: int
+}
+
+entity "Book" as book {
+	+ id: uuid_base64 [PK]
+	--
+	Service_id: uuid_base64 [FK]
+	User_id: uuid_base64 [FK]
+	payment_id: uuid_base64 [FK]
+	created_at: Date
+	update_at: Date
+}
+
+entity "Payment" as payment {
+	+ id: uuid_base64 [PK]
+	--
+	Book_id: uuid_base64 [FK]
+	created_at: Date
+	update_at: Date
+	amount: int
+	payment_status: string
+	payment_method: string
+}
+
+entity "Admin" as admin {
+	+ id: uuid_base64 [PK]
+	--
+	User_id: uuid_base64 [FK]
+	Services_Approve: [uuid_base64] [FK]
+	Comment_Approves: [uuid_base64] [FK]
+}
+
+entity "Feedback" as fb {
+	+ id: uuid_base64 [PK]
+	--
+	Book_id: uuid_base64 [FK]
+	service_provider: uuid_base64 [FK]
+	created_at: Date
+	update_at: Date
+	rating: int
+	comment: string
+	status: string
+}
+@enduml
