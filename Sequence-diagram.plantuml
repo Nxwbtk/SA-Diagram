@@ -29,6 +29,7 @@ group Send confirmation mail
 	User -> BE: Confirm account
 end
 BE -> User: Return user type
+hide footbox
 @enduml
 
 ' Login
@@ -48,6 +49,7 @@ BE -->> FE: Return token
 deactivate BE
 FE -> FE: Redirect to home
 FE -->> User: Return home page
+hide footbox
 @enduml
 
 
@@ -105,6 +107,7 @@ group Available schedule
 	BE -->> Customer: Return confirm mail
 end
 deactivate BE
+hide footbox
 @enduml
 
 ' Guide and Fortune teller add service and schedule
@@ -126,6 +129,7 @@ Admin -> BE: Approve service
 BE -> BE: Update status of service
 deactivate Admin
 BE -->> GF: GET add service status
+hide footbox
 @enduml
 
 ' Payment process
@@ -179,6 +183,7 @@ group Select QR code method
 	BE -->> FE: Return payment transaction
 	deactivate BE
 end
+hide footbox
 @enduml
 
 ' Guide and Fortune teller send report
@@ -203,6 +208,7 @@ BE -->> FE: Return confirmation
 BE -->> GF: Return confirmation mail
 deactivate FE
 deactivate BE
+hide footbox
 @enduml
 
 ' Customer give feedback
@@ -226,4 +232,5 @@ deactivate Admin
 BE -> BE: Update status of feedback
 BE -->> FE: Return confirmation
 BE -->> GF: Send feedback mail
+hide footbox
 @enduml

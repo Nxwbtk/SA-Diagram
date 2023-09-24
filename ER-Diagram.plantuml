@@ -28,6 +28,8 @@ entity "Services" as service {
 	update_at: Date
 	duration: int
 	price: int
+	status: string
+	approver: uuid_base64 [FK]
 }
 
 entity "Book" as book {
@@ -70,4 +72,7 @@ entity "Feedback" as fb {
 	comment: string
 	status: string
 }
+
+' entity
+
 @enduml
