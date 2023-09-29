@@ -19,7 +19,7 @@ else (Guide/Fortune Teller)
 		:Send reject mail to Guide/Fortune Teller;
 	endif
 endif
-|User/Guide/Fortune Teller|
+|Customer/Guide/Fortune Teller|
 :Confirm Register;
 :Login;
 stop
