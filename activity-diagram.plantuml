@@ -32,26 +32,19 @@ stop
 |User|
 start
 :Login;
-:Send mail and password info to server;
 |Server|
 :Check info;
 if (isCorrect) is (Correct) then
-	:Generate limited time token;
-	:Save token to Database;
-	:Send Page and token to User;
+	:Send Home Page to User;
 else (inCorrect)
 	:Send Error page to User;
 endif
 
 |User|
-:Get respone from server;
 if (Access) is (true) then
-	:Save token to cookie;
 	:Redirect to Home page;
 	if (User) is (Customer) then
 	:Show Customer page;
-	:Selected Service;
-	:Redirect to Service page;
 	else (Guide/Fortune Teller)
 	:Show Guide/Fortune Teller page;
 	endif
@@ -69,10 +62,7 @@ stop
 start
 :Login;
 :Select Service;
-:Send request to server;
 |Server|
-:Check token;
-:Check request Service;
 :Return Service page;
 |Customer|
 :Show Service page;
@@ -82,10 +72,8 @@ start
 :Send the avaliable date to Customer;
 |Customer|
 :Select date;
-:Send request to server;
 |Server|
-:Check token;
-:Check request date;
+:Check avaliable date;
 if (isAvaliable) is (false) then
 	:Send Error page to Customer;
 	|Customer|
@@ -106,7 +94,6 @@ start
 |Server|
 if (Paymeny method) is (QRCode) then
 	|Server|
-	:Generate QRCode;
 	:Send QRCode to Customer;
 	|Customer|
 	:Show QRCode;
@@ -115,9 +102,7 @@ if (Paymeny method) is (QRCode) then
 else (Credit Card)
 	|Server|
 	:Redirect to Credit Card page;
-	:Send request to Bank;
 	|Bank|
-	:Check request;
 	:Generate transaction;
 	|Customer|
 	:Fill Credit Card info;
@@ -127,8 +112,6 @@ else (Credit Card)
 	:Send transaction result to Server;
 	|Server|
 	:Check transaction result;
-	:Save transaction result;
-	:Update payment status on DB;
 endif
 stop
 @enduml
@@ -140,39 +123,30 @@ stop
 start
 :Login;
 :Select menu;
-:Send request to server;
 |Server|
-:Check request;
-if (Request Page) is (Add Service) then
+if (select Page) is (Add Service) then
 	:Return Add service page to Guide/Fortune Teller;
 else (Add working time)
 	:Return Add working time page to Guide/Fortune Teller;
 endif
 |Guide/Fortune Teller|
-:Show page;
-:Fill info;
 if (Page) is (Add working time) then
-	:Send request to server;
+	:Select menu;
+	:Click Add working time;
 	|Server|
-	:Check token;
 	:Return Add working time page;
 	|Guide/Fortune Teller|
-	:Show page;
 	:Add time;
-	:Save time to server;
 else (Add Service)
-	:Send request to server;
+	:Send service to server;
 	|Server|
-	:Check token;
 	:Send approve to admin;
 	|Admin|
 	:Check info;
 	if (Correct info) is (Correct) then
-		:Save info to DB;
+		:Send confirm mail to Guide/Fortune Teller;
 	else (Incorrect)
 	endif
-|Server|
-:Send confirm mail to Guide/Fortune Teller;
 endif
 |Guide/Fortune Teller|
 stop
@@ -188,11 +162,10 @@ start
 repeat
 :Send prove to server;
 |Server|
-:Save prove to DB;
 :Send prove to admin;
 |Admin|
 :Check prove;
-:send result to server;
+:send result;
 |Server|
 :Check result;
 if (Result) is (Incorrect) then
@@ -201,7 +174,7 @@ if (Result) is (Incorrect) then
 	:Resend prove;
 else (Correct)
 	|Server|
-	:Update status to DB;
+	:Send confirm mail to Guide/Fortune Teller;
 endif
 |Guide/Fortune Teller|
 repeat while (reject prove) is (Yes) not (No)
@@ -213,23 +186,21 @@ stop
 @startuml
 |Customer|
 start
-:Login;
 :Select finish service;
 repeat
 :Send feedback to server;
 |Server|
-:Save feedback to DB;
 :Send feedback to approve with admin;
 |Admin|
 :Check feedback;
-:Send result to server;
+:Send result;
 |Server|
 :Check result;
 if (Result) is (Incorrect) then
 	:Send reject mail to Customer;
 else (Correct)
 	|Server|
-	:Update status to DB;
+	:Send confirm mail to Customer;
 endif
 |Customer|
 repeat while (reject feedback) is (Yes) not (No)
