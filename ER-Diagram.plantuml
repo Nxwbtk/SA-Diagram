@@ -1,9 +1,9 @@
 @startuml
 entity "User" as user {
-	+ id: uuid_base64 [PK]
+	+ user_id: uuid_base64 [PK]
 	--
 	first_name: string
-	middle_name: string
+	middle_name: string | null (optional)
 	last_name: string
 	email: stirng
 	password: string
@@ -13,23 +13,23 @@ entity "User" as user {
 }
 
 entity "Provider" as provider {
-	+ id: uuid_base64 [PK]
+	+ provider_id: uuid_base64 [PK]
 	--
-	User_id: uuid_base64 [FK]
-	Services: [uuid_base64] [FK]
+	user_id: uuid_base64 [FK]
+	services: [uuid_base64] [FK]
 }
 
 entity "Customer" as customer {
-	+ id: uuid_base64 [PK]
+	+ customer_id: uuid_base64 [PK]
 	--
-	User_id: uuid_base64 [FK]
-	Booking_id: [uuid_base64] [FK]
-	Used_Services: [uuid_base64] [FK]
-	Feedback_id: [uuid_base64] [FK]
+	user_id: uuid_base64 [FK]
+	booking_id: [uuid_base64] [FK]
+	used_Services: [uuid_base64] [FK]
+	feedback_id: [uuid_base64] [FK]
 }
 
 entity "Services" as service {
-	+ id: uuid_base64 [PK]
+	+ service_id: uuid_base64 [PK]
 	--
 	name: string
 	description: string
@@ -43,19 +43,19 @@ entity "Services" as service {
 }
 
 entity "Booking" as book {
-	+ id: uuid_base64 [PK]
+	+ book_id: uuid_base64 [PK]
 	--
-	Service_id: uuid_base64 [FK]
-	Customer_id: uuid_base64 [FK]
+	service_id: uuid_base64 [FK]
+	customer_id: uuid_base64 [FK]
 	payment_id: uuid_base64 [FK]
 	created_at: Date
 	update_at: Date
 }
 
 entity "Payment" as payment {
-	+ id: uuid_base64 [PK]
+	+ payment_id: uuid_base64 [PK]
 	--
-	Book_id: uuid_base64 [FK]
+	book_id: uuid_base64 [FK]
 	created_at: Date
 	update_at: Date
 	amount: int
@@ -64,17 +64,17 @@ entity "Payment" as payment {
 }
 
 entity "Admin" as admin {
-	+ id: uuid_base64 [PK]
+	+ admin_id: uuid_base64 [PK]
 	--
-	User_id: uuid_base64 [FK]
-	Services_Approve: [uuid_base64] [FK]
-	Comment_Approves: [uuid_base64] [FK]
+	user_id: uuid_base64 [FK]
+	services_Approve: [uuid_base64] [FK]
+	comment_Approves: [uuid_base64] [FK]
 }
 
 entity "Feedback" as fb {
-	+ id: uuid_base64 [PK]
+	+ feedback_id: uuid_base64 [PK]
 	--
-	Book_id: uuid_base64 [FK]
+	book_id: uuid_base64 [FK]
 	service_provider: uuid_base64 [FK]
 	created_at: Date
 	update_at: Date
@@ -84,10 +84,10 @@ entity "Feedback" as fb {
 }
 
 entity "Service_log" as log {
-	+ id: uuid_base64 [PK]
+	+ log_id: uuid_base64 [PK]
 	--
-	Service_id: uuid_base64 [FK]
-	Booking_id: uuid_base64 [FK]
+	service_id: uuid_base64 [FK]
+	book_id: uuid_base64 [FK]
 	created_at: Date
 	update_at: Date
 	approver: uuid_base64 [FK]

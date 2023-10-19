@@ -4,6 +4,7 @@ actor User
 actor Admin
 participant "Frontend" as FE
 participant "Backend" as BE
+' autoactivate on
 User -> FE: Fill info
 activate FE
 FE -> BE: Post info
@@ -11,7 +12,7 @@ deactivate FE
 note over FE: POST /api/register
 activate BE
 BE -> BE: Validate input
-BE -> BE: Save info
+BE -> BE: Save user
 deactivate BE
 group Request Approve account
 	note over BE: If user is Guide/Fortune Teller
@@ -230,7 +231,6 @@ activate Admin
 Admin -> BE: Approve feedback
 deactivate Admin
 BE -> BE: Update status of feedback
-BE -->> FE: Return confirmation
 BE -->> GF: Send feedback mail
 hide footbox
 @enduml

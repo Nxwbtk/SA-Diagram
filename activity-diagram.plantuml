@@ -32,26 +32,16 @@ stop
 |User|
 start
 :Login;
-|Server|
+|System|
 :Check info;
-if (isCorrect) is (Correct) then
+if (isCorrect) is (correct) then
 	:Send Home Page to User;
 else (inCorrect)
 	:Send Error page to User;
 endif
 
 |User|
-if (Access) is (true) then
-	:Redirect to Home page;
-	if (User) is (Customer) then
-	:Show Customer page;
-	else (Guide/Fortune Teller)
-	:Show Guide/Fortune Teller page;
-	endif
-else (false)
-	:Show Error Dialog;
-	:Redirect to Login page;
-endif
+:Access to Website;
 stop
 @enduml
 
